@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { getProducts } from '../api/stock'
-import ProductCard from '../components/ProductCard'
+import SearchBox from '../components/SearchBox'
 import CategorySection from '../components/CategorySection'
 
 function StockPage() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     getProducts().then((data) => {
@@ -14,7 +15,15 @@ function StockPage() {
     })
   }, [])
 
-  const groups = products.reduce((result, product) => {
+  const text = query.trim().toLowerCase()
+
+  const filtered = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(text) ||
+      p.category.toLowerCase().includes(text)
+  )
+
+  const groups = filtered.reduce((result, product) => {
     if (!result[product.category]) result[product.category] = []
     result[product.category].push(product)
     return result
@@ -29,21 +38,30 @@ function StockPage() {
       ) : (
         <>
           <p className="mt-1 text-gray-500 dark:text-gray-400">
-            Total items: {products.length}
+            {text
+              ? `Showing ${filtered.length} of ${products.length} items`
+              : `Total items: ${products.length}`}
           </p>
 
+          <SearchBox
+            value={query}
+            onChange={setQuery}
+            placeholder="Search items or category"
+          />
+
+          {filtered.length === 0 && (
+            <p className="mt-6 text-center text-gray-500 dark:text-gray-400">
+              No items found
+            </p>
+          )}
+
           {Object.entries(groups).map(([category, items]) => (
-            <CategorySection key={category} category={category} items={items} />
-            // <section key={category} className="mt-6">
-            //   <h2 className="mb-2 text-lg font-bold">
-            //     {category} ({items.length})
-            //   </h2>
-            //   <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            //     {items.map((product) => (
-            //       <ProductCard key={product.id} product={product} />
-            //     ))}
-            //   </div>
-            // </section>
+            <CategorySection
+              key={category}
+              category={category}
+              items={items}
+              forceOpen={text !== ''}
+            />
           ))}
         </>
       )}

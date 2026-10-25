@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import ProductCard from './ProductCard'
 
-function CategorySection({ category, items }) {
+function CategorySection({ category, items, forceOpen = false }) {
   const [open, setOpen] = useState(false)
+  const isOpen = open || forceOpen
 
   return (
     <section className="mt-4 rounded-xl border border-gray-200 dark:border-gray-700">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        aria-expanded={open}
+        aria-expanded={isOpen}
         className="flex w-full items-center justify-between px-4 py-3 text-left"
       >
         <span className="text-lg font-bold">
@@ -20,14 +21,14 @@ function CategorySection({ category, items }) {
         </span>
         <span
           className={`text-xl text-orange-600 transition-transform dark:text-orange-400 ${
-            open ? 'rotate-180' : ''
+            isOpen ? 'rotate-180' : ''
           }`}
         >
           ▼
         </span>
       </button>
 
-      {open && (
+      {isOpen && (
         <div className="grid grid-cols-2 gap-3 px-4 pb-4 md:grid-cols-3">
           {items.map((product) => (
             <ProductCard key={product.id} product={product} />
