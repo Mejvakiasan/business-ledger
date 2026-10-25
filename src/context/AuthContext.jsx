@@ -24,7 +24,7 @@ export function AuthProvider({children}){
 
     function logout(){
         setUser(null)
-        localStroage.removeItem('user')
+        localStorage.removeItem('user')
     }
 
     return(

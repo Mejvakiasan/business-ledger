@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getProducts } from '../api/stock'
 import ProductCard from '../components/ProductCard'
+import CategorySection from '../components/CategorySection'
 
 function StockPage() {
   const [products, setProducts] = useState([])
@@ -32,16 +33,17 @@ function StockPage() {
           </p>
 
           {Object.entries(groups).map(([category, items]) => (
-            <section key={category} className="mt-6">
-              <h2 className="mb-2 text-lg font-bold">
-                {category} ({items.length})
-              </h2>
-              <div className="space-y-2">
-                {items.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </section>
+            <CategorySection key={category} category={category} items={items} />
+            // <section key={category} className="mt-6">
+            //   <h2 className="mb-2 text-lg font-bold">
+            //     {category} ({items.length})
+            //   </h2>
+            //   <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            //     {items.map((product) => (
+            //       <ProductCard key={product.id} product={product} />
+            //     ))}
+            //   </div>
+            // </section>
           ))}
         </>
       )}
