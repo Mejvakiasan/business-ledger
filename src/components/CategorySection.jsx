@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ProductCard from './ProductCard'
 
-function CategorySection({ category, items, forceOpen = false }) {
+function CategorySection({ category, items, forceOpen = false, ...cardProps }) {
   const [open, setOpen] = useState(false)
   const isOpen = open || forceOpen
 
@@ -23,6 +23,7 @@ function CategorySection({ category, items, forceOpen = false }) {
           className={`text-xl text-orange-600 transition-transform dark:text-orange-400 ${
             isOpen ? 'rotate-180' : ''
           }`}
+        
         >
           ▼
         </span>
@@ -31,7 +32,7 @@ function CategorySection({ category, items, forceOpen = false }) {
       {isOpen && (
         <div className="grid grid-cols-2 gap-3 px-4 pb-4 md:grid-cols-3">
           {items.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} {...cardProps} />
           ))}
         </div>
       )}

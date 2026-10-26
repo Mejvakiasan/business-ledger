@@ -1,4 +1,5 @@
-function ProductCard({ product }) {
+
+function ProductCard({ product, canEdit, canDelete, onEdit, onDelete }) {
   const low = product.quantity < 10
 
   const badgeStyle = low
@@ -34,6 +35,28 @@ function ProductCard({ product }) {
           ₹{product.price}
         </span>
       </div>
+            {(canEdit || canDelete) && (
+        <div className="mt-3 flex gap-2">
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit(product)}
+              className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-bold dark:border-gray-600"
+            >
+              Edit
+            </button>
+          )}
+          {canDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(product)}
+              className="flex-1 rounded-lg border border-red-300 py-2 text-sm font-bold text-red-600 dark:border-red-800 dark:text-red-400"
+            >
+              Delete
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
