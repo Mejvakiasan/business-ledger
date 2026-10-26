@@ -43,5 +43,10 @@ export async function getProducts() {
         products = products.filter((p) => p.id !== id)
     }
 
+    export async function getGroceryLookup() {
+  await wait(200)
+  return products.map((p) => ({ id: p.id, name: p.name, price: p.price }))
+}
+
 
 
