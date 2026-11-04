@@ -1,57 +1,54 @@
-import { mockProducts } from '../data/mockProducts';
+import { mockProducts } from '../data/mockProducts'
 
-const wait = (ms) => new Promise ((resolve) => setTimeout(resolve, ms));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-    let products = [...mockProducts]
+let products = [...mockProducts]
 
-export async function getProducts() {
-    await wait(400)
-    return [...products];
+function assertOnline() {
+  if (!navigator.onLine) throw new Error('You are offline')
 }
 
-    export async function addProduct(data) {
-        await wait(300)
-        const nextId = products.reduce((max, p) => Math.max(max, p.id), 0) + 1
-        const product = {
-            id: nextId,
-            name: data.name,
-            price: Number(data.price),
-            category: data.category,
-            quantity: Number(data.quantity) || 0,
-            image: data.image || '',
-        }
-        products = [...products, product]
-        return product
-    }
+export async function getProducts() {
+  await wait(400)
+  return [...products]
+}
 
-        export async function updateProduct(id, data) {
-        await wait(300)
-        const updated = {
-            id: nextId,
-            name: data.name,
-            price: Number(data.price),
-            category: data.category,
-            quantity: Number(data.quantity) || 0,
-            image: data.image || '',
-        }
-        products = products.map((p) => (p.id === id ? updated : p))
-        return updated
-    }
-
-    export async function deleteProduct(id){
-        await wait(300)
-        products = products.filter((p) => p.id !== id)
-    }
-
-    function assertOnline() {
-        if(!navigator.online) throw new Error('You are offline')
-    }
-
-    export async function getGroceryLookup() {
-        assertOnline()
+export async function getGroceryLookup() {
+  assertOnline()
   await wait(200)
   return products.map((p) => ({ id: p.id, name: p.name, price: p.price }))
 }
 
+export async function addProduct(data) {
+  await wait(300)
+  const nextId = products.reduce((max, p) => Math.max(max, p.id), 0) + 1
+  const product = {
+    id: nextId,
+    name: data.name,
+    price: Number(data.price),
+    category: data.category,
+    quantity: Number(data.quantity) || 0,
+    image: data.image || '',
+  }
+  products = [...products, product]
+  return product
+}
 
+export async function updateProduct(id, data) {
+  await wait(300)
+  const updated = {
+    id,
+    name: data.name,
+    price: Number(data.price),
+    category: data.category,
+    quantity: Number(data.quantity) || 0,
+    image: data.image || '',
+  }
+  products = products.map((p) => (p.id === id ? updated : p))
+  return updated
+}
 
+export async function deleteProduct(id) {
+  await wait(300)
+  products = products.filter((p) => p.id !== id)
+}
