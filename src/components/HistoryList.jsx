@@ -3,6 +3,7 @@ import HistoryCard from './HistoryCard'
 import ConfirmDialog from './ConfirmDialog'
 import { formatDateTime } from '../utils/grocery'
 
+
 function HistoryList({ history, canDelete, onDelete }) {
   const [deleting, setDeleting] = useState(null)
 

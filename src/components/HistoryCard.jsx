@@ -39,6 +39,11 @@ function HistoryCard({ record, canDelete, onDelete }) {
             {record.unavailable.length > 0 &&
               ` · ${record.unavailable.length} not available`}
           </span>
+           {record.syncStatus !== 'SYNCED' && (
+            <span className="mt-1 block w-fit rounded-sm border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-800 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-300">
+              Saved on phone, waiting to sync
+            </span>
+          )}
         </span>
         <span
           className={`text-xl text-orange-600 transition-transform dark:text-orange-400 ${

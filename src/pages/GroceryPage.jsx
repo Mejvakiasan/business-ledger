@@ -20,6 +20,7 @@ import SearchBox from '../components/SearchBox'
 import GroceryItemRow from '../components/GroceryItemRow'
 import ConfirmDialog from '../components/ConfirmDialog'
 import HistoryList from '../components/HistoryList'
+import SyncStatus from '../components/SyncStatus'
 
 function GroceryPage() {
   const { user } = useAuth()
@@ -132,11 +133,14 @@ function GroceryPage() {
       </div>
 
       {tab === 'history' && (
+        <>
+         <SyncStatus />
         <HistoryList
           history={history}
           canDelete={user.role === 'ADMIN'}
           onDelete={deleteHistory}
         />
+        </>
       )}
 
       {tab === 'list' && !list && <BudgetSetup onStart={startList} />}
