@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom"
 import { useAuth } from "./context/AuthContext.jsx"
 import BottomNav from "./components/BottomNav"
 import Header from "./components/Header"
+import OfflineBanner from './components/OfflineBanner'
 
 import HomePage from "./pages/HomePage"
 import StockPage from "./pages/StockPage"
@@ -42,6 +43,7 @@ function App() {
      {user ? (
       <>
       <Header theme={theme} onToggle={toggleTheme} />
+      <OfflineBanner />
    <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/stock" element={<StockPage/>} />

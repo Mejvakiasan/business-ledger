@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useGrocery } from '../context/groceryStore'
-import { getGroceryLookup } from '../api/stock'
+import { loadGroceryItems } from '../db/groceryItems'
 import {
   calcSpent,
   formatMoney,
@@ -12,6 +12,7 @@ import {
   setStatus,
   countByStatus,
   completePurchase,
+  formatDateTime,
 } from '../utils/grocery'
 import BudgetSetup from '../components/BudgetSetup'
 import BudgetBar from '../components/BudgetBar'
@@ -22,19 +23,30 @@ import HistoryList from '../components/HistoryList'
 
 function GroceryPage() {
   const { user } = useAuth()
-  const { list, setList, history, addHistory, deleteHistory } = useGrocery()
+  const { list, setList, history, finishPurchase, deleteHistory, ready } =
+    useGrocery()
   const [tab, setTab] = useState('list')
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const [confirmComplete, setConfirmComplete] = useState(false)
   const [stockItems, setStockItems] = useState(null)
+  const [itemsNote, setItemsNote] = useState(null)
   const [query, setQuery] = useState('')
 
   useEffect(() => {
-    getGroceryLookup().then(setStockItems)
+    loadGroceryItems().then(({ items, fromCache, updatedAt }) => {
+      setStockItems(items)
+      setItemsNote(fromCache ? { updatedAt } : null)
+    })
   }, [])
 
   if (user.role === 'CUSTOMER') {
     return <Navigate to="/" replace />
+  }
+
+  if (!ready) {
+    return (
+      <p className="p-4 text-gray-500 dark:text-gray-400">Loading...</p>
+    )
   }
 
   function startList(estimate) {
@@ -76,8 +88,7 @@ function GroceryPage() {
 
   function handleComplete() {
     const record = completePurchase(list, user.username)
-    addHistory(record)
-    setList(null)
+    finishPurchase(record)
     setConfirmComplete(false)
     setTab('history')
   }
@@ -139,6 +150,14 @@ function GroceryPage() {
             onChange={setQuery}
             placeholder="Search item to add"
           />
+
+          {itemsNote && (
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              {itemsNote.updatedAt
+                ? `Offline: using prices saved on ${formatDateTime(itemsNote.updatedAt)}`
+                : 'Offline: no saved items yet. Connect once to load them.'}
+            </p>
+          )}
 
           {text && (
             <div className="mt-2 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">

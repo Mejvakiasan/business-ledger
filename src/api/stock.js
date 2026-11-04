@@ -43,7 +43,12 @@ export async function getProducts() {
         products = products.filter((p) => p.id !== id)
     }
 
+    function assertOnline() {
+        if(!navigator.online) throw new Error('You are offline')
+    }
+
     export async function getGroceryLookup() {
+        assertOnline()
   await wait(200)
   return products.map((p) => ({ id: p.id, name: p.name, price: p.price }))
 }
