@@ -4,10 +4,11 @@ import { useOnlineStatus } from '../hooks/useOnlineStatus'
 const inputStyle =
   'w-full rounded-lg border border-gray-300 bg-white px-3 py-3 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800'
 
-function AddCustomerForm({ onSave, onClose }) {
+function AddCustomerForm({ customer, onSave, onClose }) {
   const online = useOnlineStatus()
-  const [name, setName] = useState('')
-  const [mobile, setMobile] = useState('')
+  const editing = Boolean(customer)
+  const [name, setName] = useState(customer?.name ?? '')
+  const [mobile, setMobile] = useState(customer?.mobile ?? '')
   const [amount, setAmount] = useState('')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -19,7 +20,7 @@ function AddCustomerForm({ onSave, onClose }) {
     if (mobile && !/^\d{10}$/.test(mobile)) {
       return setError('Mobile number must be 10 digits')
     }
-    if (!(Number(amount) > 0)) {
+    if (!editing && !(Number(amount) > 0)) {
       return setError('Enter an amount greater than 0')
     }
 
@@ -41,7 +42,9 @@ function AddCustomerForm({ onSave, onClose }) {
         className="max-h-[90vh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 pb-8 dark:bg-gray-900"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-xl font-bold text-orange-600">New customer</h2>
+        <h2 className="mb-4 text-xl font-bold text-orange-600">
+          {editing ? 'Edit customer' : 'New customer'}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
@@ -67,17 +70,19 @@ function AddCustomerForm({ onSave, onClose }) {
             />
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm">Amount (₹)</label>
-            <input
-              className={inputStyle}
-              type="number"
-              inputMode="decimal"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="First amount"
-            />
-          </div>
+          {!editing && (
+            <div>
+              <label className="mb-1 block text-sm">Amount (₹)</label>
+              <input
+                className={inputStyle}
+                type="number"
+                inputMode="decimal"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="First amount"
+              />
+            </div>
+          )}
 
           {error && <p className="text-sm text-red-600">{error}</p>}
           {!online && (

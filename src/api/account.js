@@ -92,3 +92,52 @@ export async function addEntry(customerId, amount) {
   entries = [...entries, entry]
   return entry
 }
+
+export async function getMonthSummary(customerId, monthKey) {
+  assertOnline()
+  await wait(250)
+
+  const days = {}
+  let total = 0
+
+  for (const entry of entries) {
+    if (entry.customerId !== customerId) continue
+    const key = toDateKey(entry.entryTime)
+    if (!key.startsWith(monthKey)) continue
+    days[key] = (days[key] ?? 0) + entry.amount
+    total += entry.amount
+  }
+
+  return { days, total }
+}
+
+export async function updateEntry(entryId, amount) {
+  assertOnline()
+  await wait(250)
+  entries = entries.map((entry) =>
+    entry.id === entryId ? { ...entry, amount: Number(amount) } : entry
+  )
+}
+
+export async function deleteEntry(entryId) {
+  assertOnline()
+  await wait(250)
+  entries = entries.filter((entry) => entry.id !== entryId)
+}
+
+export async function updateCustomer(id, { name, mobile }) {
+  assertOnline()
+  await wait(250)
+  customers = customers.map((customer) =>
+    customer.id === id
+      ? { ...customer, name: name.trim(), mobile: mobile.trim() }
+      : customer
+  )
+}
+
+export async function deleteCustomer(id) {
+  assertOnline()
+  await wait(250)
+  customers = customers.filter((customer) => customer.id !== id)
+  entries = entries.filter((entry) => entry.customerId !== id)
+}

@@ -19,3 +19,8 @@ export function formatDayLabel(value) {
     month: 'short',
   })
 }
+
+export function fromDateKey(key) {
+  const [year, month, day] = key.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
