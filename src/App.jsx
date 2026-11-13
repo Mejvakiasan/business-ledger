@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext.jsx'
-import { STAFF_UP } from './config/tabs'
+import { useTheme } from './context/themeStore'
+import { STAFF_UP, ADMIN_ONLY } from './config/tabs'
 import BottomNav from './components/BottomNav'
 import Header from './components/Header'
 import OfflineBanner from './components/OfflineBanner'
@@ -13,28 +13,12 @@ import CalculatorPage from './pages/CalculatorPage'
 import AccountPage from './pages/AccountPage'
 import GroceryPage from './pages/GroceryPage'
 import SettingPage from './pages/SettingPage'
+import UsersPage from './pages/UsersPage'
 import LoginPage from './pages/LoginPage'
-
-function getStartTheme() {
-  const saved = localStorage.getItem('theme')
-  if (saved) return saved
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light'
-}
 
 function App() {
   const { user } = useAuth()
-  const [theme, setTheme] = useState(getStartTheme)
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem('theme', theme)
-  }, [theme])
-
-  function toggleTheme() {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <div className="min-h-screen bg-white pb-16 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
@@ -56,6 +40,14 @@ function App() {
               }
             />
             <Route path="/setting" element={<SettingPage />} />
+            <Route
+              path="/users"
+              element={
+                <RequireRole roles={ADMIN_ONLY}>
+                  <UsersPage />
+                </RequireRole>
+              }
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <BottomNav />

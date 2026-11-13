@@ -16,6 +16,9 @@ export function AuthProvider({children}){
         if(!found){
             return{ok: false, message: 'Invalid username or password'}
         }
+        if(!found.status === 'DEACTIVATED'){
+            return{ok: false, message: 'Your account is deactivated. Please contact the Admin.'}
+        }
         const {password: _hidden, ...safeUser} = found
         setUser(safeUser)
         localStorage.setItem('user', JSON.stringify(safeUser))

@@ -1,5 +1,6 @@
 export const ALL_ROLES = ['ADMIN', 'STAFF', 'CUSTOMER']
 export const STAFF_UP = ['ADMIN', 'STAFF']
+export const ADMIN_ONLY = ['ADMIN']
 
 export const tabs = [
   { to: '/stock', label: 'Stock', roles: ALL_ROLES },
